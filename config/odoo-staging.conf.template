@@ -1,0 +1,17 @@
+[options]
+; Generado desde odoo-staging.conf.template por scripts/render-config.sh - no editar
+; a mano, editar el .template y volver a renderizar.
+admin_passwd = ${ODOO_ADMIN_PASSWD_STAGING}
+db_maxconn = 32
+proxy_mode = True
+; Staging siempre en 0: no necesita el modelo multi-proceso y así no compite
+; por RAM/CPU con producción en el mismo droplet.
+workers = 0
+max_cron_threads = 1
+limit_time_cpu = 600
+limit_time_real = 1200
+list_db = False
+; Fuerza que este contenedor solo vea/sirva la base de staging.
+dbfilter = ^${STAGING_DB}$
+logfile = /var/log/odoo/odoo.log
+addons_path = /mnt/enterprise-addons,/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons
