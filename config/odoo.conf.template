@@ -1,0 +1,19 @@
+[options]
+; Generado desde odoo.conf.template por scripts/render-config.sh - no editar a mano,
+; editar el .template y volver a renderizar.
+; HOST/USER/PASSWORD de Postgres se sobreescriben via variables de entorno del
+; contenedor (ver docker-compose.yml), no hace falta ponerlos acá.
+admin_passwd = ${ODOO_ADMIN_PASSWD_PROD}
+db_maxconn = 64
+proxy_mode = True
+workers = ${ODOO_WORKERS_PROD}
+max_cron_threads = 1
+limit_time_cpu = 600
+limit_time_real = 1200
+list_db = False
+; IMPORTANTE: sin este dbfilter, en cuanto exista más de una base en el mismo
+; Postgres (por ejemplo al crear la de staging), Odoo no puede auto-seleccionar
+; cuál servir y redirige a /web/database/selector en vez de al login.
+dbfilter = ^${PROD_DB}$
+logfile = /var/log/odoo/odoo.log
+addons_path = /mnt/enterprise-addons,/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons
