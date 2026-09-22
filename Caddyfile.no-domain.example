@@ -1,0 +1,42 @@
+# Fallback TEMPORAL para usar mientras todavía no hay un dominio propio
+# apuntando al droplet. Sirve por HTTP plano sobre la IP pública, sin HTTPS
+# (Caddy solo emite certificados Let's Encrypt para un nombre de dominio
+# válido, no para direcciones IP).
+#
+# Para usar esto: copiar este archivo a "Caddyfile" y descomentar el puerto
+# "8080:8080" en docker-compose.yml (servicio caddy).
+#
+# Apenas haya un dominio real para producción y otro para staging:
+#   1) Crear los registros DNS tipo A de ambos apuntando a la IP del droplet
+#   2) Volver a generar Caddyfile desde Caddyfile.template con
+#      scripts/render-config.sh (ver README)
+#   3) Volver a comentar el puerto 8080 en docker-compose.yml y, si estaba
+#      abierto, cerrarlo también en el ufw y en el Cloud Firewall de
+#      DigitalOcean (son DOS capas separadas - ver README).
+:80 {
+	encode gzip
+
+	@longpolling path /longpolling/*
+	reverse_proxy @longpolling odoo:8072
+
+	reverse_proxy odoo:8069
+
+	header {
+		X-Frame-Options "SAMEORIGIN"
+		X-Content-Type-Options "nosniff"
+	}
+}
+
+:8080 {
+	encode gzip
+
+	@longpolling path /longpolling/*
+	reverse_proxy @longpolling odoo-staging:8072
+
+	reverse_proxy odoo-staging:8069
+
+	header {
+		X-Frame-Options "SAMEORIGIN"
+		X-Content-Type-Options "nosniff"
+	}
+}
