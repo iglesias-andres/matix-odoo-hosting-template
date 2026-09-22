@@ -1,0 +1,13 @@
+# Secretos y config generada - nunca commitear
+.env
+config/odoo.conf
+config/odoo-staging.conf
+Caddyfile
+
+# Datos locales
+backups/
+enterprise/
+addons/*
+!addons/.gitkeep
+caddy_data/
+caddy_config/
