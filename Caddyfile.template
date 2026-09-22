@@ -1,0 +1,28 @@
+${PROD_DOMAIN} {
+	encode gzip
+
+	# Odoo longpolling (chat, notificaciones) va a un puerto distinto
+	@longpolling path /longpolling/*
+	reverse_proxy @longpolling odoo:8072
+
+	reverse_proxy odoo:8069
+
+	header {
+		X-Frame-Options "SAMEORIGIN"
+		X-Content-Type-Options "nosniff"
+	}
+}
+
+${STAGING_DOMAIN} {
+	encode gzip
+
+	@longpolling path /longpolling/*
+	reverse_proxy @longpolling odoo-staging:8072
+
+	reverse_proxy odoo-staging:8069
+
+	header {
+		X-Frame-Options "SAMEORIGIN"
+		X-Content-Type-Options "nosniff"
+	}
+}
